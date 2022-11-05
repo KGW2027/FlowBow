@@ -36,9 +36,9 @@ public class CommandAdapter extends ListenerAdapter {
                 .addOption(OptionType.INTEGER, "difficult", "레벨에 비한 실제 난이도 (1~5)", true)
                 .addOption(OptionType.INTEGER, "good", "문제가 도움이 되는지 (1~5)", true)
                 .addOption(OptionType.STRING, "comment", "코멘트를 남기고싶다면 적어주세요.", false)
-                .addOption(OptionType.BOOLEAN, "b", "입력하지마세요.", false)
-                .addOption(OptionType.INTEGER, "i", "입력하지마세요.", false)
-                .addOption(OptionType.STRING, "s", "입력하지마세요.", false));
+                .addOption(OptionType.BOOLEAN, "efficiency", "(최초 평가용) 효율성 검사 여부", false)
+                .addOption(OptionType.INTEGER, "level", "(최초 평가용) 문제의 레벨", false)
+                .addOption(OptionType.STRING, "name", "(최초 평가용) 문제 이름", false));
 
         pgmsSubcommands.add(new SubcommandData("info", "문제 평가 정보를 조회합니다.")
                 .addOption(OptionType.STRING, "idorname", "문제의 ID나 이름을 적어주세요.", true));
@@ -83,6 +83,7 @@ public class CommandAdapter extends ListenerAdapter {
                         int good = event.getOption("good").getAsInt();
                         if(good < 1) good = 1; else if (good > 5) good = 5;
 
+                        EnvironmentData.logger.rateProgrammersProblem(event.getUser().getIdLong(), id);
 
                         boolean success = false;
                         if(event.getOptions().size() == 3) {
@@ -92,20 +93,21 @@ public class CommandAdapter extends ListenerAdapter {
                             if(comment != null && event.getOptions().size() == 4) {
                                 success = ProgrammersRecommender.getInstance().rateProblem(event.getUser().getIdLong(), id, diff, good, comment.getAsString());
                             } else {
-                                if (comment == null && !event.getMember().hasPermission(Permission.ADMINISTRATOR)){
-                                    event.reply("요청이 실패했습니다.").queue();
+                                OptionMapping level = event.getOption("level");
+                                OptionMapping eff = event.getOption("efficiency");
+                                OptionMapping name = event.getOption("name");
+                                if(level == null || eff == null || name == null) {
+                                    event.reply("레벨, 효율성 여부, 이름 중 제대로 입력되지않은 정보가 있습니다.").queue();
                                     return;
                                 }
-                                int level = event.getOption("i").getAsInt();
-                                boolean eff = event.getOption("b").getAsBoolean();
-                                String name = event.getOption("s").getAsString();
-                                ProgrammersRecommender.getInstance().addProblem(event.getUser().getIdLong(), id, level, name, diff, good, eff);
+                                ProgrammersRecommender.getInstance().addProblem(event.getUser().getIdLong(), id, level.getAsInt(), name.getAsString(), diff, good, eff.getAsBoolean());
                                 success = true;
                             }
                         }
-                        EnvironmentData.logger.rateProgrammersProblem(event.getUser().getIdLong(), id);
                         if(success) {
                             event.reply("요청이 성공적으로 수행되었습니다.").queue();
+                        } else {
+                            event.reply("요청이 실패했습니다.\n입력값을 다시 확인하거나, 똑같은 문제를 2번 평가하려고 하는게 아닌지 생각해보세요.").queue();
                         }
                         break;
                     case "info":
