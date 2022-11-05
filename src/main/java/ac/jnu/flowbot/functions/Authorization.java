@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 import java.awt.*;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * 디스코드 방 참여를 위한 인증 절차를 관리합니다.
  */
-public class Authorization implements Runnable{
+public class Authorization implements Runnable {
 
     public static final long channel = 1038035269594648627L;
     private static HashMap<Long, Authorization> progressAuthorizations = new HashMap<>();
@@ -41,8 +42,7 @@ public class Authorization implements Runnable{
                         채널 내에서는 프로그래밍과 관련한 질문, 코드테스트 문제 풀이, 자랑,
                         과제 관련 질문 또는 같이 게임을 즐길 수도 있습니다.
                         
-                        간단한 인증절차를 마치면 참여가능하며, 정보 입력 여부는 개인의 자유에 맡깁니다.
-                        모든 정보는 암호화되어 Amazon S3에 저장되며, 디스코드 채널을 나갈시 파기됨을 알립니다.
+                        간단한 인증절차를 마치면 참여가능하며, 입력하신 정보는 인증 이후 서버 내에서 숨길 수 있습니다.
                         """
         );
         builder.setFooter("전 Java 좋아하는데...");
@@ -78,8 +78,7 @@ public class Authorization implements Runnable{
 
             privateChannel.sendMessage("""
                     안녕하세요! 인증절차에 참가해주셔서 감사합니다!
-                    다음 절차에서 수집되는 정보들은 서버 내 역할 지급에 사용한 후
-                    암호화시켜서 AWS에 저장합니다.
+                    다음 절차에서 수집되는 정보들은 서버 내 역할 지급에 사용됩니다.
                                                         
                     개인정보를 공개하는 것에 거리낌이 있다면,
                     편하게 익명으로 참가하셔도됩니다!
@@ -148,10 +147,19 @@ public class Authorization implements Runnable{
             privateChannel.sendMessage("""
                                     역할 지급이 완료되었습니다!
                                     <#%general%>에서 반갑게 인사해요.
-                                    """.replace("%general%", "1038035269594648631")).queue();
+                                    학과나 학번 정보를 숨기고 싶다면 <#%privacy%>로 이동해주세요.
+                                    선호하는 언어에 대해서 설정하고 싶다면 <#%language%>로 이동해주세요.
+                                    """
+                    .replace("%general%", "1038035269594648631")
+                    .replace("%privacy%", String.valueOf(PrivacySettings.channel))
+                    .replace("%language%", String.valueOf(FavoriteLanguages.channel))).queue();
         });
 
-        DatabaseIntegration.getInstance().insertMemberData(memberData);
+        try {
+            DatabaseIntegration.getInstance().insertMemberData(memberData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         EnvironmentData.logger.completeAuthorization(user.getIdLong());
     }
 

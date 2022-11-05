@@ -2,10 +2,7 @@ package ac.jnu.flowbot.events;
 
 import ac.jnu.flowbot.data.EnvironmentData;
 import ac.jnu.flowbot.data.database.Languages;
-import ac.jnu.flowbot.functions.Authorization;
-import ac.jnu.flowbot.functions.FavoriteLanguages;
-import ac.jnu.flowbot.functions.FunctionManager;
-import ac.jnu.flowbot.functions.RoleManager;
+import ac.jnu.flowbot.functions.*;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -32,13 +29,13 @@ public class InteractionAdapter extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         EnvironmentData.logger.newMemberJoin(event.getUser().getIdLong());
-        FunctionManager.updateMemberCount(event.getGuild().getMemberCount());
+        FunctionManager.decreaseMemberCount();
     }
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         EnvironmentData.logger.leaveMember(event.getUser().getIdLong());
-        FunctionManager.updateMemberCount(event.getGuild().getMemberCount());
+        FunctionManager.increaseMemberCount();
     }
 
     @Override
@@ -50,7 +47,9 @@ public class InteractionAdapter extends ListenerAdapter {
                 event.getHook().sendMessage("1대1 메세지로 인증 절차에 대해서 알려드릴게요!").complete().delete().queueAfter(10L, TimeUnit.SECONDS);
                 break;
             case "TogglePrivacy":
-
+                new Thread(new PrivacySettings(event.getMember(), event.getHook())).start();
+                event.deferReply().queue();
+                break;
         }
     }
 

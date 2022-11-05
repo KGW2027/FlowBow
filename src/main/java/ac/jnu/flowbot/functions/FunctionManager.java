@@ -54,8 +54,15 @@ public class FunctionManager {
         }
     }
 
-    public static void updateMemberCount(int count) {
+    public static void increaseMemberCount() {
         VoiceChannel channel = EnvironmentData.getInstance().getMainGuild().getVoiceChannelById(1038370762043699220L);
+        int count = Integer.parseInt(channel.getName().split(":")[1].replace(" ", ""))+1;
+        channel.getManager().setName(String.format("멤버 수 : %d", count)).queue();
+    }
+
+    public static void decreaseMemberCount() {
+        VoiceChannel channel = EnvironmentData.getInstance().getMainGuild().getVoiceChannelById(1038370762043699220L);
+        int count = Integer.parseInt(channel.getName().split(":")[1].replace(" ", ""))-1;
         channel.getManager().setName(String.format("멤버 수 : %d", count)).queue();
     }
 }

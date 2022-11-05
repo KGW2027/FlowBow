@@ -61,6 +61,14 @@ public class RoleManager {
         return r;
     }
 
+    public static Role[] getColleges() {
+        return new Role[]{
+          EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.OTHER.id),
+          EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.ENGINEERING.id),
+          EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.MULTIPLE.id)
+        };
+    }
+
     public static Role getYear(String year) {
         return EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.valueOf("YEAR"+year.substring(0, 2)).id);
     }
