@@ -112,7 +112,7 @@ public class CommandAdapter extends ListenerAdapter {
                         String s = event.getOption("idorname").getAsString();
                         if(isNum(s)) event.replyEmbeds(ProgrammersRecommender.getInstance().getProblemInfo(Long.parseLong(s))).queue();
                         else event.replyEmbeds(ProgrammersRecommender.getInstance().getProblemInfo(s)).queue();
-                        EnvironmentData.logger.infoProgrammersProblem(event.getUser().getIdLong(), id);
+                        EnvironmentData.logger.infoProgrammersProblem(event.getUser().getIdLong(), s);
                         break;
                     case "list":
                         int level = event.getOption("level").getAsInt();
@@ -136,7 +136,7 @@ public class CommandAdapter extends ListenerAdapter {
                         } else {
                             embed = ProgrammersRecommender.getInstance().getRandomByLevel(rlevel);
                         }
-                        EnvironmentData.logger.randomProgrammersProblem(event.getUser().getIdLong(), level);
+                        EnvironmentData.logger.randomProgrammersProblem(event.getUser().getIdLong(), rlevel);
                         event.replyEmbeds(embed).queue();
                         break;
                 }

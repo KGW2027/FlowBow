@@ -87,8 +87,8 @@ public class Logger {
         return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 %d를 평가했습니다.", userId, probId));
     }
 
-    public boolean infoProgrammersProblem(long userId, long probId) {
-        return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 %d를 조회했습니다.", userId, probId));
+    public boolean infoProgrammersProblem(long userId, String probId) {
+        return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 %s를 조회했습니다.", userId, probId));
     }
 
     public boolean listProgrammersProblem(long userId, int level) {

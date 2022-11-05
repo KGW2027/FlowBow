@@ -55,10 +55,10 @@ public class Members {
         br.close();
         membersString = builder.toString();
         if(membersString.equals("{}")) return;
-        String[] test = membersString.substring(1, membersString.length()-1).split(",");
+        String[] test = membersString.substring(1, membersString.length()-1).split("},");
         for(String info : test) {
-            if(info.startsWith("{") && info.endsWith("}")) {
-                String[] data = info.replace("{", "").replace("}", "").split(", ");
+            if(info.startsWith("{")) {
+                String[] data = info.replace("{", "").split(", ");
                 MemberData md = new MemberData();
                 md.userId = Long.parseLong(data[0]);
                 md.name = data[1];
