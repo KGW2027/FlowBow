@@ -3,6 +3,7 @@ package ac.jnu.flowbot;
 import ac.jnu.flowbot.data.EnvironmentData;
 import ac.jnu.flowbot.events.EventManager;
 import ac.jnu.flowbot.functions.Authorization;
+import ac.jnu.flowbot.functions.FavoriteLanguages;
 import ac.jnu.flowbot.functions.FunctionManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -38,5 +39,6 @@ public class BotController {
 
     private void validUtilities() {
         FunctionManager.checkAuthorizationInfoMessage(Objects.requireNonNull(guild.getTextChannelById(Authorization.channel)));
+        FunctionManager.checkFavoriteLanguages(guild, Objects.requireNonNull(guild.getTextChannelById(FavoriteLanguages.channel)));
     }
 }

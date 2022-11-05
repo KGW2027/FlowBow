@@ -1,18 +1,19 @@
 package ac.jnu.flowbot.functions;
 
+import ac.jnu.flowbot.data.EnvironmentData;
+import ac.jnu.flowbot.data.database.Languages;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.List;
 
 public class FunctionManager {
 
-    /**
-     * #어서와요 채널에 인증 절차 안내를 위한 메세지가 유지되고 있는지 검사합니다.
-     *
-     * @param welcomeChannel #어서와요 채널의 ID
-     */
     public static void checkAuthorizationInfoMessage(TextChannel welcomeChannel){
         List<Message> history = welcomeChannel.getHistory().retrievePast(10).complete();
 
@@ -24,12 +25,37 @@ public class FunctionManager {
                             Button.success("StartAuthorization", "인증 절차 시작")
                     ).complete();
         }
-        // remove other message
-        else if (history.size() > 1)
+    }
+
+    public static void checkFavoriteLanguages(Guild guild, TextChannel langChannel) {
+        List<Message> history = langChannel.getHistory().retrievePast(10).complete();
+
+        if(history.size() == 0)
         {
-            for(int msg = 0 ; msg < history.size()-1 ; msg++)
-                history.get(msg).delete().queue();
+            langChannel.sendMessageEmbeds(FavoriteLanguages.getEmbed()).queue(msg-> {
+                for(Languages lang : Languages.values()) {
+                    Emoji emoji = guild.getEmojiById(lang.getId());
+                    if(emoji != null)
+                        msg.addReaction(emoji).queue();
+                }
+            });
         }
     }
 
+    public static void checkPrivacySettings(TextChannel privacyChannel){
+        List<Message> history = privacyChannel.getHistory().retrievePast(10).complete();
+
+        if(history.size() == 0)
+        {
+            privacyChannel.sendMessageEmbeds(PrivacySettings.getEmbed())
+                    .addActionRow(
+                            Button.primary("TogglePrivacy", "정보 표시/숨기기")
+                    ).complete();
+        }
+    }
+
+    public static void updateMemberCount(int count) {
+        VoiceChannel channel = EnvironmentData.getInstance().getMainGuild().getVoiceChannelById(1038370762043699220L);
+        channel.getManager().setName(String.format("멤버 수 : %d", count)).queue();
+    }
 }
