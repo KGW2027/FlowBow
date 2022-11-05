@@ -8,6 +8,7 @@ public class EventManager {
 
     public void registerEvents(JDA jda) {
         jda.addEventListener(new InteractionAdapter());
+        jda.addEventListener(new CommandAdapter(jda));
     }
 
 }
