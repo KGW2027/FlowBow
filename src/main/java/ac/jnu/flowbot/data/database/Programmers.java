@@ -26,13 +26,13 @@ public class Programmers implements Serializable {
         long raters; // 평가자 수
         int level; // 실제 프로그래머즈 레벨
         List<String> comments; // 한줄평
-        boolean hasEffciency;
+        boolean hasEfficiency; //효율성 검사 여부
 
         @Override
         public int compareTo(@NotNull ProblemRate o) {
             if(good + difficult > o.good + o.difficult) return 1;
             else if(good + difficult < o.good + o.difficult) return -1;
-            if(hasEffciency) return 1;
+            if(hasEfficiency) return 1;
             return 0;
         }
     }
@@ -53,7 +53,7 @@ public class Programmers implements Serializable {
         pr.name = name;
         pr.difficult = difficult;
         pr.good = good;
-        pr.hasEffciency = haseff;
+        pr.hasEfficiency = haseff;
         pr.comments = comment.equals("") ? new ArrayList<>() : new ArrayList<>(List.of(new String[]{comment}));
         pr.raters = 1;
 
@@ -106,7 +106,7 @@ public class Programmers implements Serializable {
             builder.setColor(new java.awt.Color(0x68C72B));
             builder.setTitle(String.format("%s (%d) 문제 정보입니다.", pr.name, pr.probId));
             builder.addField("문제 레벨", String.valueOf(pr.level), false);
-            builder.addField("효율성 검사 여부", pr.hasEffciency ? "있음" : "없음", true);
+            builder.addField("효율성 검사 여부", pr.hasEfficiency ? "있음" : "없음", true);
             builder.addField("평가자 수", String.valueOf(pr.raters), true);
             double diffScore = Math.round( (pr.difficult / (double) pr.raters) * 100 ) / 100.0f;
             builder.addField("레벨에 적합한 난이도 인가?", diffScore + " / 5", false);
@@ -138,7 +138,7 @@ public class Programmers implements Serializable {
             prs.sort(Collections.reverseOrder());
             for(ProblemRate pr : prs) {
                 if(checkEff) {
-                    if(pr.hasEffciency) problemList.add(new Object[]{pr.probId, pr.name, pr.raters});
+                    if(pr.hasEfficiency) problemList.add(new Object[]{pr.probId, pr.name, pr.raters});
                 } else {
                     problemList.add(new Object[]{pr.probId, pr.name, pr.raters});
                 }
@@ -160,7 +160,7 @@ public class Programmers implements Serializable {
             ProblemRate pr = probInfo.get(levelProblems.get(random));
             if(checkEff) {
                 int start = random;
-                while(!pr.hasEffciency && start != ++random) {
+                while(!pr.hasEfficiency && start != ++random) {
                     if(random >= probInfo.size()) random = 0;
                     pr = probInfo.get(levelProblems.get(random));
                 }
