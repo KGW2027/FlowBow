@@ -48,10 +48,19 @@ public class RoleManager {
         }
     }
 
+    /**
+     * 인증됨 역할을 반환합니다.
+     * @return 인증됨 Role
+     */
     public static Role getVerified() {
         return EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.VERIFYED.id);
     }
 
+    /**
+     * 학부 역할을 반환합니다.
+     * @param college
+     * @return 공대생,복전생,기타재학생 Role
+     */
     public static Role getCollege(College.Colleges college) {
         Role r = EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.OTHER.id);
         switch (college){
@@ -61,6 +70,10 @@ public class RoleManager {
         return r;
     }
 
+    /**
+     * 학부 역할을 3종류 모두 반환합니다.
+     * @return 학부 Role 3개가 모두 담긴 Array
+     */
     public static Role[] getColleges() {
         return new Role[]{
           EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.OTHER.id),
@@ -69,10 +82,20 @@ public class RoleManager {
         };
     }
 
+    /**
+     * 학번 역할을 반환합니다.
+     * @param year 학번 정보 (문자열에서 앞 2자리만 인식, 20zxcv -> 20학번, 171717 -> 17학번)
+     * @return 학번 Role
+     */
     public static Role getYear(String year) {
         return EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.valueOf("YEAR"+year.substring(0, 2)).id);
     }
 
+    /**
+     * 선호 프로그래밍 언어 역할을 반환합니다.
+     * @param languages 프로그래밍 언어 Enum
+     * @return 프로그래밍 언어 Role
+     */
     public static Role getLanguage(Languages languages) {
         return EnvironmentData.getInstance().getMainGuild().getRoleById(Roles.valueOf(languages.name()).id);
     }

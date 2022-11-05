@@ -1,17 +1,17 @@
 package ac.jnu.flowbot.functions;
 
-import ac.jnu.flowbot.data.EnvironmentData;
 import ac.jnu.flowbot.data.database.Languages;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.List;
 
+/**
+ * 봇이 제공하는 기능들의 초기값이 제대로 설정되었는지 검사합니다.
+ */
 public class FunctionManager {
 
     public static void checkAuthorizationInfoMessage(TextChannel welcomeChannel){

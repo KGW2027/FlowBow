@@ -50,6 +50,11 @@ public class Authorization implements Runnable {
         return builder.build();
     }
 
+    /**
+     * 개인메세지로 오는 입력을 메인스레드에서 받아 전달합니다.
+     * @param tc 어떤 유저의 입력인지
+     * @param message 입력된 데이터
+     */
     public static void sendData(Long tc, String message) {
         if(progressAuthorizations.containsKey(tc)) {
             progressAuthorizations.get(tc).dataInput = message;
