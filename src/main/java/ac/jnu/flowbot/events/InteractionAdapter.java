@@ -29,13 +29,11 @@ public class InteractionAdapter extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         EnvironmentData.logger.newMemberJoin(event.getUser().getIdLong());
-        FunctionManager.decreaseMemberCount();
     }
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         EnvironmentData.logger.leaveMember(event.getUser().getIdLong());
-        FunctionManager.increaseMemberCount();
     }
 
     @Override
@@ -56,6 +54,8 @@ public class InteractionAdapter extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if(event.getAuthor().isBot()) return;
+
+        EnvironmentData.logger.logChattedMessage(event.getAuthor().getIdLong(), event.getMessage().getContentRaw());
 
         // DM 데이터 인증절차 전송
         if(event.isFromType(ChannelType.PRIVATE)) {

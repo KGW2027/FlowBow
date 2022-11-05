@@ -77,6 +77,8 @@ public class EnvironmentData {
                     .setChunkingFilter(ChunkingFilter.ALL)
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                    // 메세지 접근 권한
+                    .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                     // 상태 표시
                     .setStatus(OnlineStatus.IDLE)
                     .setActivity(Activity.playing("IDE"))

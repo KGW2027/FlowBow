@@ -71,4 +71,8 @@ public class Logger {
         return addLog(LogType.NORMAL, String.format("%d님이 정보를 공개하였습니다.", userId));
     }
 
+    public boolean logChattedMessage(Long userId, String raw) {
+        return addLog(LogType.MESSAGE, String.format("%d -> %s", userId, raw));
+    }
+
 }
