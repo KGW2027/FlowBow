@@ -66,4 +66,9 @@ public class Logger {
         return addLog(LogType.LEAVE, String.format("%d님이 채널에서 퇴장했습니다.", userId));
     }
 
+    public boolean editPrivacySetting(Long userId, boolean hide) {
+        if(hide) return addLog(LogType.NORMAL, String.format("%d님이 정보를 비공개하였습니다.", userId));
+        return addLog(LogType.NORMAL, String.format("%d님이 정보를 공개하였습니다.", userId));
+    }
+
 }

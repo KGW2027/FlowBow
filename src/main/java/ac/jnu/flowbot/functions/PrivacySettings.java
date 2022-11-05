@@ -53,9 +53,11 @@ public class PrivacySettings implements Runnable {
         if(!roleList.contains(colleges[0]) && !roleList.contains(colleges[1]) && !roleList.contains(colleges[2])) { // 정보 공개
             roleList.add(year);
             roleList.add(college);
+            EnvironmentData.logger.editPrivacySetting(member.getIdLong(), false);
         } else { // 정보 숨기기
             roleList.remove(year);
             roleList.remove(college);
+            EnvironmentData.logger.editPrivacySetting(member.getIdLong(), true);
         }
         EnvironmentData.getInstance().getMainGuild().modifyMemberRoles(member, roleList).queue();
         hook.sendMessage("적용되었습니다!").complete().delete().queueAfter(5, TimeUnit.SECONDS);
