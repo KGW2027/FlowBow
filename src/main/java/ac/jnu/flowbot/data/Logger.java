@@ -75,4 +75,28 @@ public class Logger {
         return addLog(LogType.MESSAGE, String.format("%d -> %s", userId, raw));
     }
 
+    public boolean sendException(Exception exception) {
+        boolean success = true;
+        if(!addLog(LogType.EXCEPTION, exception.getMessage())) success = false;
+        for(StackTraceElement ste : exception.getStackTrace())
+            if(!addLog(LogType.EXCEPTION, ste.toString())) success = false;
+        return success;
+    }
+
+    public boolean rateProgrammersProblem(long userId, long probId) {
+        return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 %d를 평가했습니다.", userId, probId));
+    }
+
+    public boolean infoProgrammersProblem(long userId, long probId) {
+        return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 %d를 조회했습니다.", userId, probId));
+    }
+
+    public boolean listProgrammersProblem(long userId, int level) {
+        return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 레벨 %d 목록을 조회했습니다.", userId, level));
+    }
+
+    public boolean randomProgrammersProblem(long userId, int level) {
+        return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 레벨 %d에서 랜덤으로 문제를 받았습니다.", userId, level));
+    }
+
 }
