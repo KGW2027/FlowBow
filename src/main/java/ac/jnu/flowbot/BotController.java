@@ -2,10 +2,7 @@ package ac.jnu.flowbot;
 
 import ac.jnu.flowbot.data.EnvironmentData;
 import ac.jnu.flowbot.events.EventManager;
-import ac.jnu.flowbot.functions.Authorization;
-import ac.jnu.flowbot.functions.FavoriteLanguages;
-import ac.jnu.flowbot.functions.FunctionManager;
-import ac.jnu.flowbot.functions.PrivacySettings;
+import ac.jnu.flowbot.functions.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -24,11 +21,13 @@ public class BotController {
     private JDA jda;
     private Guild guild;
     private EventManager eventManager;
+    private WebHTTPRequester webHTTPRequester;
 
     private BotController() {
         ed = EnvironmentData.getInstance();
         jda = ed.getJDA();
         eventManager = new EventManager();
+        webHTTPRequester = new WebHTTPRequester();
     }
 
     public void run() throws InterruptedException {
@@ -36,6 +35,7 @@ public class BotController {
         jda.awaitReady();
         guild = ed.getMainGuild();
         validUtilities();
+        new Thread(webHTTPRequester).start();
     }
 
     private void validUtilities() {
