@@ -13,10 +13,10 @@ import java.io.*;
 
 public class EnvironmentData {
 
-    boolean isLocal = true;
-
     private static EnvironmentData instance;
     public static Logger logger;
+
+    public static final boolean isLocal = true;
 
     public static EnvironmentData getInstance() {
         if(instance == null) {
@@ -39,17 +39,13 @@ public class EnvironmentData {
     private Guild mainGuild;
 
     private EnvironmentData() throws IOException {
-        if(isLocal) {
-            File env = new File("./EnvironmentDatas");
-            if(!env.exists()) throw new FileNotFoundException("Set isLocal to False");
+        File env = new File("./EnvironmentDatas");
+        if(!env.exists()) throw new FileNotFoundException("Need Local EnvironmentDatas");
 
-            BufferedReader reader = new BufferedReader(new FileReader(env));
-            String line;
-            while((line = reader.readLine()) != null)
-                updateData(line);
-        } else {
-
-        }
+        BufferedReader reader = new BufferedReader(new FileReader(env));
+        String line;
+        while((line = reader.readLine()) != null)
+            updateData(line);
         logger = new Logger();
     }
 
