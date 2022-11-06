@@ -12,6 +12,7 @@ public class Programmers implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 10L;
+    private static final String url = "https://school.programmers.co.kr/learn/courses/30/lessons/";
 
     class ProblemRate implements Serializable, Comparable<ProblemRate>{
 
@@ -104,7 +105,7 @@ public class Programmers implements Serializable {
         } else {
             ProblemRate pr = probInfo.get(id);
             builder.setColor(new java.awt.Color(0x68C72B));
-            builder.setTitle(String.format("%s (%d) 문제 정보입니다.", pr.name, pr.probId));
+            builder.setTitle(String.format("%s (%d) 문제 정보입니다.", pr.name, pr.probId), url.concat(String.valueOf(pr.probId)));
             builder.addField("문제 레벨", String.valueOf(pr.level), false);
             builder.addField("효율성 검사 여부", pr.hasEfficiency ? "있음" : "없음", true);
             builder.addField("평가자 수", String.valueOf(pr.raters), true);
