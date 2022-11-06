@@ -99,4 +99,12 @@ public class Logger {
         return addLog(LogType.NORMAL, String.format("%d님이 프로그래머즈 문제 레벨 %d에서 랜덤으로 문제를 받았습니다.", userId, level));
     }
 
+    public boolean sendHTTPRequest(String url) {
+        return addLog(LogType.NORMAL, String.format("%s 에 HTTP Request를 전송했습니다.", url));
+    }
+
+    public boolean responseHTTPRequest(String url, int responseCode) {
+        return addLog(LogType.NORMAL, String.format("%s 에서 받은 응답 : %d", url, responseCode));
+    }
+
 }

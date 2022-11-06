@@ -30,6 +30,7 @@ public class WebHTTPRequester implements Runnable{
     private final Pattern sjStrongPattern;
     private final Pattern sjDatePattern;
 
+    private final long HOURS = 60 * 60 * 1000;
 
 
     public WebHTTPRequester() {
@@ -45,8 +46,11 @@ public class WebHTTPRequester implements Runnable{
     @Override
     public void run() {
         try {
-            connectSoftware();
-            connectSojung();
+            while(true) {
+                connectSoftware();
+                connectSojung();
+                Thread.sleep(6 * HOURS);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,14 +126,17 @@ public class WebHTTPRequester implements Runnable{
      */
 
     private List<String> getReader(String url, String startKey, String endKey) throws IOException {
+        EnvironmentData.logger.sendHTTPRequest(url);
         URL target = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) target.openConnection();
         conn.setRequestMethod("GET");
 
         if(conn.getResponseCode() != 200) {
+            EnvironmentData.logger.responseHTTPRequest(url, conn.getResponseCode());
             System.out.println(software+" 와의 연결에 실패했습니다. ResponseCode : " + conn.getResponseCode());
             return null;
         }
+        EnvironmentData.logger.responseHTTPRequest(url, conn.getResponseCode());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
