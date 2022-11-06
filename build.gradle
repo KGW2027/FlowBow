@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group 'org.example'
@@ -9,14 +10,27 @@ repositories {
     mavenCentral()
 }
 
+compileJava.options.encoding("UTF-8")
+
+tasks.withType(JavaCompile) {
+    options.encoding("UTF-8")
+}
+
+jar {
+    finalizedBy shadowJar
+    manifest {
+        attributes 'Main-Class' : 'ac.jnu.flowbot.LifeCycle'
+    }
+}
+
 
 // JDA Version https://repo.maven.apache.org/maven2/net/dv8tion/JDA/
 dependencies {
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.22'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
-    implementation ('net.dv8tion:JDA:5.0.0-alpha.22') {
-        exclude module: 'opus-java'
-    }
+
 }
 
 test {
