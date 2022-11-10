@@ -33,7 +33,7 @@ public class CommandAdapter extends ListenerAdapter {
 
         pgmsSubcommands.add(new SubcommandData("rate", "문제를 평가합니다.")
                 .addOption(OptionType.INTEGER, "id", "문제 풀이 주소창 가장 우측의 숫자를 입력해주세요.", true)
-                .addOption(OptionType.INTEGER, "difficult", "레벨에 비한 실제 난이도 (1~5)", true)
+                .addOption(OptionType.INTEGER, "difficult", "체감 레벨 (1레벨~5레벨)", true)
                 .addOption(OptionType.INTEGER, "good", "문제가 도움이 되는지 (1~5)", true)
                 .addOption(OptionType.STRING, "comment", "코멘트를 남기고싶다면 적어주세요.", false)
                 .addOption(OptionType.BOOLEAN, "efficiency", "(최초 평가용) 효율성 검사 여부", false)

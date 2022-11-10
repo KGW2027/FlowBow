@@ -22,7 +22,7 @@ public class Programmers implements Serializable {
         long probId; // 문제 ID
         String name; // 문제 이름
         long good; // 알고리즘이 좋은가
-        long difficult; // 난이도가 적절한가
+        long difficult; // 체감레벨
         List<Long> ratersId; // 평가자 목록
         long raters; // 평가자 수
         int level; // 실제 프로그래머즈 레벨
@@ -110,7 +110,7 @@ public class Programmers implements Serializable {
             builder.addField("효율성 검사 여부", pr.hasEfficiency ? "있음" : "없음", true);
             builder.addField("평가자 수", String.valueOf(pr.raters), true);
             double diffScore = Math.round( (pr.difficult / (double) pr.raters) * 100 ) / 100.0f;
-            builder.addField("레벨에 적합한 난이도 인가?", diffScore + " / 5", false);
+            builder.addField("체감레벨", diffScore + " 레벨", false);
             double goodScore = Math.round( (pr.good / (double) pr.raters) * 100 ) / 100.0f;
             builder.addField("문제가 좋은가?", goodScore + " / 5", true);
 
