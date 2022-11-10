@@ -11,6 +11,7 @@ public class RequestSerializer{
     public enum RequestSiteType {
         SOFTWARE("./datas/software.dat"),
         SOJUNG("./datas/sojung.dat"),
+        ENGINEERING("./datas/engineering.dat"),
         ;
 
         String path;

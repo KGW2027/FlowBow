@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,8 +20,9 @@ public class WebHTTPRequester implements Runnable{
 
 
     private final String software = "https://sw.jnu.ac.kr";
-    private final long softwareTC = 1038409177887932416L;
     private final String sojung = "https://sojoong.kr/www/notice/";
+    private final String engineering = "https://eng.jnu.ac.kr";
+    private final long softwareTC = 1038409177887932416L;
 
     private final Pattern swHrefPattern;
     private final Pattern swStrongPattern;
@@ -47,8 +49,9 @@ public class WebHTTPRequester implements Runnable{
     public void run() {
         try {
             while(true) {
-                connectSoftware();
-                connectSojung();
+//                connectSoftware();
+//                connectSojung();
+                connectEngineering();
                 Thread.sleep(6 * HOURS);
             }
 
@@ -112,11 +115,42 @@ public class WebHTTPRequester implements Runnable{
             matcher.find();
             String date = matcher.group();
 
-            hrefs.add(new HrefInfo(title.replace("&quot;", "\""), date, software.concat(url.replace("<a href=\"", ""))));
+            hrefs.add(new HrefInfo(encodeText(title), date, software.concat(url.replace("<a href=\"", ""))));
         }
 
         List<HrefInfo> needPrint = new RequestSerializer().update(RequestSerializer.RequestSiteType.SOFTWARE, hrefs);
         sendHrefInfo(needPrint, softwareTC, new java.awt.Color(0x7ACBCB), "소프트웨어공학과 공지사항");
+    }
+
+    /*
+
+        전남대학교 공과대학 공지사항 파싱
+
+     */
+    private void connectEngineering() throws IOException, ClassNotFoundException {
+        List<String> tables = getReader(engineering.concat("/eng/7343/subview.do"), "<tr class=\"\"", "</tr>");
+        tables.sort(Comparator.naturalOrder());
+
+        List<HrefInfo> hrefs = new ArrayList<>();
+        Matcher matcher;
+        for(String tb : tables) {
+            matcher = swHrefPattern.matcher(tb);
+            matcher.find();
+            String url = matcher.group();
+
+            matcher = swStrongPattern.matcher(tb);
+            matcher.find();
+            String title = matcher.group();
+
+            matcher = swDatePattern.matcher(tb);
+            matcher.find();
+            String date = matcher.group();
+
+            hrefs.add(new HrefInfo(encodeText(title), date, engineering.concat(url.replace("<a href=\"", ""))));
+        }
+
+        List<HrefInfo> needPrint = new RequestSerializer().update(RequestSerializer.RequestSiteType.ENGINEERING, hrefs);
+        sendHrefInfo(needPrint, softwareTC, new java.awt.Color(0x6ED96E), "공과대학 공지사항");
     }
     
     /*
@@ -171,6 +205,16 @@ public class WebHTTPRequester implements Runnable{
         conn.disconnect();
 
         return tables;
+    }
+
+    private String encodeText(String text) {
+        return text
+                .replace("&apos;", "\'")
+                .replace("&quot;", "\"")
+                .replace("&nbps;", " ")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&amp;", "&");
     }
 
     private void sendHrefInfo(List<HrefInfo> sendData, long tcId, java.awt.Color color, String footer) {
