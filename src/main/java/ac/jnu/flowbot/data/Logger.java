@@ -5,6 +5,7 @@ import ac.jnu.flowbot.data.database.SolvedTier;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class Logger {
 
@@ -21,6 +22,7 @@ public class Logger {
 
     public Logger() throws IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         int fileNum = 1;
         do{
             String fileName = String.format("floatbow-log-%s-%d.log", sdf.format(new Date()), fileNum++);
@@ -32,7 +34,9 @@ public class Logger {
     }
 
     private String createLogString(LogType type, String log) {
-        String time = new SimpleDateFormat("[HH:mm:ss]").format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss]");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        String time = sdf.format(new Date());
         return String.format("%s [%s] [%s]: %s\r\n", time, type, Thread.currentThread(), log);
     }
 
