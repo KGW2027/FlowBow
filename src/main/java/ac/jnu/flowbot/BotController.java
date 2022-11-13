@@ -6,6 +6,7 @@ import ac.jnu.flowbot.functions.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class BotController {
@@ -42,5 +43,7 @@ public class BotController {
         FunctionManager.checkAuthorizationInfoMessage(Objects.requireNonNull(guild.getTextChannelById(Authorization.channel)));
         FunctionManager.checkFavoriteLanguages(guild, Objects.requireNonNull(guild.getTextChannelById(FavoriteLanguages.channel)));
         FunctionManager.checkPrivacySettings(Objects.requireNonNull(guild.getTextChannelById(PrivacySettings.channel)));
+        // Solved.ac에 많은 Request를 보내게 되므로 평상시에는 비활성화 해야한다.
+        // SolvedProblemParser.parseSolvedData();
     }
 }

@@ -27,6 +27,7 @@ public class ProgrammersRecommender {
             } else {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
                 manager = (Programmers) ois.readObject();
+                ois.close();
             }
         } catch (IOException | ClassNotFoundException e) {
             EnvironmentData.logger.sendException(e);
@@ -38,6 +39,7 @@ public class ProgrammersRecommender {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
             oos.writeObject(manager);
+            oos.flush();
             oos.close();
         } catch (IOException e) {
             EnvironmentData.logger.sendException(e);

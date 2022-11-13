@@ -1,5 +1,7 @@
 package ac.jnu.flowbot.data;
 
+import ac.jnu.flowbot.data.database.SolvedTier;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -105,6 +107,10 @@ public class Logger {
 
     public boolean responseHTTPRequest(String url, int responseCode) {
         return addLog(LogType.NORMAL, String.format("%s 에서 받은 응답 : %d", url, responseCode));
+    }
+
+    public boolean failedParseSolvedProblem(SolvedTier tier) {
+        return addLog(LogType.EXCEPTION, String.format("Solved.ac의 %s 등급 문제 Request에 대한 JSON 파싱에 실패했습니다.", tier.toString()));
     }
 
 }

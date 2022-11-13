@@ -2,6 +2,7 @@ package ac.jnu.flowbot.events;
 
 import ac.jnu.flowbot.data.EnvironmentData;
 import ac.jnu.flowbot.data.ProgrammersRecommender;
+import ac.jnu.flowbot.data.SolvedRecommender;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -61,7 +62,9 @@ public class CommandAdapter extends ListenerAdapter {
         // Solved.ac 문제 조회 명령어
 
         jda.upsertCommand("solved", "Solved.ac 레벨별 문제 추천을 받습니다.")
-                .addOption(OptionType.STRING, "level", "추천을 받고싶은 레벨을 입력해주세요. (브론즈, 실버, 골드, 플래티넘, 다이아몬드, 루비)")
+                .addOption(OptionType.STRING, "level", "추천을 받고싶은 레벨을 입력해주세요. (Bronze ~ Ruby)", true)
+                .addOption(OptionType.STRING, "grade", "해당 레벨의 등급을 입력해주세요. ( I ~ V )", true)
+                .addOption(OptionType.STRING, "tag", "원하는 태그가 있다면 입력해주세요. 구분은 띄어쓰기로 하며, 한 단어를 나타내고 싶다면 _를 사용합니다.", false)
                 .queue();
     }
 
@@ -144,8 +147,11 @@ public class CommandAdapter extends ListenerAdapter {
                 }
                 break;
             case "solved":
-                String slevel = event.getOption("level").getAsString();
-                event.reply("아직 Solved.ac 기능은 추가되지 않았습니다. TnT").queue();
+                String level = event.getOption("level").getAsString();
+                String grade = event.getOption("grade").getAsString();
+                OptionMapping tags = event.getOption("tag");
+                randomSolvedProblem(level, grade, tags, event.getHook());
+                event.deferReply().queue();
                 break;
         }
     }
@@ -171,6 +177,17 @@ public class CommandAdapter extends ListenerAdapter {
         }
 
         hook.sendMessageEmbeds(builder.build()).complete();
+    }
 
+    private void randomSolvedProblem(String level, String grade, OptionMapping tags, InteractionHook hook) {
+        new Thread(() -> {
+            MessageEmbed embed;
+            if (tags == null) {
+                embed = SolvedRecommender.getInstance().getRecommendProblem(level, grade);
+            } else {
+                embed = SolvedRecommender.getInstance().getRecommendProblem(level, grade, tags.getAsString().split(" "));
+            }
+            hook.sendMessageEmbeds(embed).queue();
+        }).start();
     }
 }
