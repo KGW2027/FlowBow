@@ -7,9 +7,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class SolvedRecommender {
 
@@ -95,12 +94,75 @@ public class SolvedRecommender {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(String.format("%s (문제 %d번) 입니다.", sp.getTitleKo(), sp.getProblemId()), String.format(SOLVED_LINK, sp.getProblemId()));
         eb.setColor(new java.awt.Color(0x5FD046));
+        eb.addField("레벨/등급", level.concat(" ").concat(grade), false);
         eb.addField("문제를 푼 사람", String.valueOf(sp.getAcceptUserCount()), false);
         eb.addField("평균 시도 횟수", String.valueOf(sp.getAvgTries()), false);
         eb.addField("태그", Arrays.toString(sp.getTags().toArray(new String[0])).replace("[", "").replace("]", ""), false);
         eb.setFooter("행운을 빕니다!");
 
         return eb.build();
+    }
+
+    /**
+     * 매일 한 문제 Solved에 등록된 백준 문제를 반환합니다.
+     * @param level 레벨
+     * @return 문제 Embed
+     */
+    public MessageEmbed getDayRandomProblem(String level) {
+        SolvedTier[] tiers = new SolvedTier[0];
+        switch(level.toLowerCase(Locale.ROOT)) {
+            case "bronze":
+                tiers = new SolvedTier[]{SolvedTier.BRONZE_V, SolvedTier.BRONZE_IV, SolvedTier.BRONZE_III, SolvedTier.BRONZE_II, SolvedTier.BRONZE_I};
+                break;
+            case "silver":
+                tiers = new SolvedTier[]{SolvedTier.SILVER_V, SolvedTier.SILVER_IV, SolvedTier.SILVER_III, SolvedTier.SILVER_II, SolvedTier.SILVER_I};
+                break;
+            case "gold":
+                tiers = new SolvedTier[]{SolvedTier.GOLD_V, SolvedTier.GOLD_IV, SolvedTier.GOLD_III, SolvedTier.GOLD_II, SolvedTier.GOLD_I};
+                break;
+            case "platinum":
+                tiers = new SolvedTier[]{SolvedTier.PLATINUM_V, SolvedTier.PLATINUM_IV, SolvedTier.PLATINUM_III, SolvedTier.PLATINUM_II, SolvedTier.PLATINUM_I};
+                break;
+        }
+
+        int bound = 0;
+        for(SolvedTier tier : tiers) bound += cache.get(tier).size();
+
+        int randKey = (new Random()).nextInt(bound);
+        int subs = 0;
+        int grade = 0;
+        for(; grade < 4 ; grade++) {
+            int size = cache.get(tiers[grade]).size();
+            if(randKey < subs+size) break;
+            subs += size;
+        }
+
+        List<SolvedProblem> list = cache.get(tiers[grade]);
+        SolvedProblem sp = list.get(randKey - subs);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        String[] date = sdf.format(new Date()).split("-");
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle(String.format("%s년 %s월 %s일의 %s 문제는 %s (문제 %d번) 입니다.", date[0], date[1], date[2], level.toUpperCase(), sp.getTitleKo(), sp.getProblemId()), String.format(SOLVED_LINK, sp.getProblemId()));
+        eb.setColor(new java.awt.Color(0x5FD046));
+        eb.addField("레벨/등급", level.concat(" ").concat(parseGradeByInt(grade)), false);
+        eb.addField("문제를 푼 사람", String.valueOf(sp.getAcceptUserCount()), false);
+        eb.addField("평균 시도 횟수", String.valueOf(sp.getAvgTries()), false);
+        eb.addField("태그", Arrays.toString(sp.getTags().toArray(new String[0])).replace("[", "").replace("]", ""), false);
+        eb.setFooter("행운을 빕니다!");
+        return eb.build();
+    }
+
+    private String parseGradeByInt(int i) {
+        switch(i) {
+            case 0 : return "V";
+            case 1 : return "IV";
+            case 2 : return "III";
+            case 3 : return "II";
+            case 4 : return "I";
+        }
+        return "";
     }
 
     private boolean validTags(List<String> tags, String[] conds) {

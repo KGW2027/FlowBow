@@ -5,6 +5,8 @@ import ac.jnu.flowbot.data.SolvedRecommender;
 import ac.jnu.flowbot.data.database.SolvedCache;
 import ac.jnu.flowbot.data.database.SolvedProblem;
 import ac.jnu.flowbot.data.database.SolvedTier;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,12 +22,12 @@ public class SolvedProblemParser {
 
     private static final String COUNT_PATTERN = "(?<=(\"count\":))(.*?)(?=,)";
     private static final String PROB_LINE_PATTERN = "(?<=(\\{\"problemId\":))(.*?)(?=]}]})";
-
     private static final String TITLE_KO_PATTERN = "(?<=(\"titleKo\":\"))(.*?)(?=\",)";
     private static final String ACCEPT_USER_COUNT_PATTERN = "(?<=(\"acceptedUserCount\":))(.*?)(?=,)";
     private static final String AVG_TRIES_PATTERN = "(?<=(\"averageTries\":))(.*?)(?=,)";
-
     private static final String TAG_KO_PATTERN ="(?<=(\"ko\",\"name\":\"))(.*?)(?=\")";
+
+    private static final long dayProblemChannel = 1041293339183566868L;
 
 
     public static void parseSolvedData() {
@@ -140,5 +142,16 @@ public class SolvedProblemParser {
         br.close();
 
         return builder.toString();
+    }
+
+    public static void sendRecommendDayProblems() {
+        TextChannel tc = EnvironmentData.getInstance().getMainGuild().getTextChannelById(dayProblemChannel);
+        List<MessageEmbed> recommends = new ArrayList<>();
+        recommends.add(SolvedRecommender.getInstance().getDayRandomProblem("bronze"));
+        recommends.add(SolvedRecommender.getInstance().getDayRandomProblem("silver"));
+        recommends.add(SolvedRecommender.getInstance().getDayRandomProblem("gold"));
+        recommends.add(SolvedRecommender.getInstance().getDayRandomProblem("platinum"));
+
+        tc.sendMessageEmbeds(recommends).complete();
     }
 }

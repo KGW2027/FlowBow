@@ -117,4 +117,16 @@ public class Logger {
         return addLog(LogType.EXCEPTION, String.format("Solved.ac의 %s 등급 문제 Request에 대한 JSON 파싱에 실패했습니다.", tier.toString()));
     }
 
+    public boolean requestSolvedRandomProblem(long userId) {
+        return addLog(LogType.NORMAL, String.format("%d님이 Solved문제 랜덤 추천 명령어를 사용하였습니다.", userId));
+    }
+
+    public boolean reserveDayUpdater(int hour, int min, int sec) {
+        return addLog(LogType.NORMAL, String.format("DayUpdater가 시작 예약되었습니다. ( %d시간 %d분 %d초 후 )", hour, min, sec));
+    }
+
+    public boolean runDayUpdater() {
+        return addLog(LogType.NORMAL, "DayUpdater가 작동하였습니다.");
+    }
+
 }

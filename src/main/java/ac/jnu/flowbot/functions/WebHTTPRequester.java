@@ -49,8 +49,8 @@ public class WebHTTPRequester implements Runnable{
     public void run() {
         try {
             while(true) {
-//                connectSoftware();
-//                connectSojung();
+                connectSoftware();
+                connectSojung();
                 connectEngineering();
                 Thread.sleep(6 * HOURS);
             }
