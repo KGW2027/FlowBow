@@ -22,7 +22,10 @@ public class WebHTTPRequester implements Runnable{
     private final String software = "https://sw.jnu.ac.kr";
     private final String sojung = "https://sojoong.kr/www/notice/";
     private final String engineering = "https://eng.jnu.ac.kr";
-    private final long softwareTC = 1038409177887932416L;
+
+    private final long softwareTC = 1041302386435706912L;
+    private final long sojungTC = 1041302332069126166L;
+    private final long engineeringTC = 1041302360951115856L;
 
     private final Pattern swHrefPattern;
     private final Pattern swStrongPattern;
@@ -88,7 +91,7 @@ public class WebHTTPRequester implements Runnable{
         }
 
         List<HrefInfo> needPrint = new RequestSerializer().update(RequestSerializer.RequestSiteType.SOJUNG, hrefInfos);
-        sendHrefInfo(needPrint, softwareTC, new java.awt.Color(0xDF1D8579, true), "소프트웨어중심대학사업단 공지사항");
+        sendHrefInfo(needPrint, sojungTC, new java.awt.Color(0xDF1D8579, true), "소프트웨어중심대학사업단 공지사항");
     }
 
 
@@ -150,7 +153,7 @@ public class WebHTTPRequester implements Runnable{
         }
 
         List<HrefInfo> needPrint = new RequestSerializer().update(RequestSerializer.RequestSiteType.ENGINEERING, hrefs);
-        sendHrefInfo(needPrint, softwareTC, new java.awt.Color(0x6ED96E), "공과대학 공지사항");
+        sendHrefInfo(needPrint, engineeringTC, new java.awt.Color(0x6ED96E), "공과대학 공지사항");
     }
     
     /*
