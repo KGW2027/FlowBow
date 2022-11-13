@@ -18,8 +18,8 @@ public class DayUpdater {
         return instance;
     }
 
-    private final int updateHour = 19;
-    private final int updateMin = 40;
+    private final int updateHour = 23;
+    private final int updateMin = 60;
     private final int updateSec = 60;
 
     public DayUpdater() {
