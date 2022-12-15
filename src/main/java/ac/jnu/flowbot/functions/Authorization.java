@@ -21,7 +21,7 @@ import java.util.List;
 public class Authorization implements Runnable {
 
     public static final long channel = 1038035269594648627L;
-    private static HashMap<Long, Authorization> progressAuthorizations = new HashMap<>();
+    private static final HashMap<Long, Authorization> progressAuthorizations = new HashMap<>();
 
     /**
      * 인증 절차를 안내하는 MessageEmbed를 반환합니다.
@@ -61,10 +61,10 @@ public class Authorization implements Runnable {
         }
     }
 
-    private User user;
+    private final User user;
     private int progress;
     private String dataInput;
-    private MemberData memberData;
+    private final MemberData memberData;
 
     public Authorization(User user) {
         this.user = user;
@@ -185,7 +185,7 @@ public class Authorization implements Runnable {
         int request = 0;
         dataInput = null;
 
-        while(dataInput == null && request++ < 60) Thread.sleep(1 * 1000);
+        while(dataInput == null && request++ < 60) Thread.sleep(1000);
 
         if(dataInput == null || request >= 60) {
             EnvironmentData.logger.timeoutAuthorization(user.getIdLong());
@@ -251,17 +251,15 @@ public class Authorization implements Runnable {
 
     private MessageEmbed getErrorEmbed() {
         EmbedBuilder eb = new EmbedBuilder();
-        switch(progress) {
-            case 1:
-                eb.setTitle("뭔가 잘못됬습니다...");
-                eb.setDescription("""
-                        학번 인식에 실패했습니다.
-                        앞에 공백이 있었거나, 잘못입력한게 아닌지 확인해주세요.
-                        혹시 제대로 입력했는데 안된거라면... 관리자한테 DM주세요.
-                        """);
-                eb.setFooter("학번은 숨길 수 없습니다.");
-                eb.setColor(new Color(0xFE4C1E));
-                break;
+        if (progress == 1) {
+            eb.setTitle("뭔가 잘못됬습니다...");
+            eb.setDescription("""
+                    학번 인식에 실패했습니다.
+                    앞에 공백이 있었거나, 잘못입력한게 아닌지 확인해주세요.
+                    혹시 제대로 입력했는데 안된거라면... 관리자한테 DM주세요.
+                    """);
+            eb.setFooter("학번은 숨길 수 없습니다.");
+            eb.setColor(new Color(0xFE4C1E));
         }
         return eb.build();
     }

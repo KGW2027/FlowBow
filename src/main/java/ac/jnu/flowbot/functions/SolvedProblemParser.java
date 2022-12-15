@@ -72,14 +72,16 @@ public class SolvedProblemParser {
             matcher = elementPattern.matcher(json);
             while(matcher.find()) {
                 String element = matcher.group();
+                if(!element.contains("\"ko\""))
+                    System.out.println(element);
                 SolvedProblem sp = parseProblem(element);
                 problems.add(sp);
             }
 
-        }while(++curPage <= maxPage);
+        }while(++curPage <= 1);
 
         SolvedRecommender.getInstance().setCache(tier, problems);
-        System.out.println("Solved Tier " + tier.toString() + " 에 대한 parse 완료, Count : " + problems.size());
+        System.out.println("Solved Tier " + tier + " 에 대한 parse 완료, Count : " + problems.size());
     }
 
     private static SolvedProblem parseProblem(String element) {
@@ -120,7 +122,7 @@ public class SolvedProblemParser {
 
     private static String getJSONData(SolvedTier tier, int page) throws IOException {
         String path = tier.getURL().concat(String.format("&page=%d", page));
-        EnvironmentData.logger.sendHTTPRequest(path);
+//        EnvironmentData.logger.sendHTTPRequest(path);
 
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -131,7 +133,7 @@ public class SolvedProblemParser {
             System.out.println(path +" 와의 연결에 실패했습니다. ResponseCode : " + conn.getResponseCode());
             return null;
         }
-        EnvironmentData.logger.responseHTTPRequest(path, conn.getResponseCode());
+//        EnvironmentData.logger.responseHTTPRequest(path, conn.getResponseCode());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         StringBuilder builder = new StringBuilder();

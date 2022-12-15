@@ -30,8 +30,8 @@ public class PrivacySettings implements Runnable {
         return builder.build();
     }
 
-    private Member member;
-    private InteractionHook hook;
+    private final Member member;
+    private final InteractionHook hook;
 
     public PrivacySettings(Member member, InteractionHook hook) {
         this.member = member;

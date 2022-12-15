@@ -17,7 +17,7 @@ public class DatabaseIntegration {
         return instance;
     }
 
-    private Members memberDB;
+    private final Members memberDB;
 
     private DatabaseIntegration() throws IOException {
         memberDB = new Members();

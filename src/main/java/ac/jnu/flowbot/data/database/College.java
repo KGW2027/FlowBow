@@ -7,7 +7,7 @@ public class College {
     public enum Colleges {
         ENGINEERING,
         MULTIPLE,
-        OTHER;
+        OTHER
     }
 
     public static Colleges parseCollegeByName(String name) {

@@ -215,7 +215,7 @@ public class WebHTTPRequester implements Runnable{
 
     private String encodeText(String text) {
         return text
-                .replace("&apos;", "\'")
+                .replace("&apos;", "'")
                 .replace("&quot;", "\"")
                 .replace("&nbps;", " ")
                 .replace("&lt;", "<")

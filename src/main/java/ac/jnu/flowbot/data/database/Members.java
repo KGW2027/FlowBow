@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 public class Members {
 
-    private HashMap<Long, MemberData> members;
+    private final HashMap<Long, MemberData> members;
     private String membersString;
-    private File path;
+    private final File path;
 
     protected Members() throws IOException {
         path = new File("./datas/members.dat");

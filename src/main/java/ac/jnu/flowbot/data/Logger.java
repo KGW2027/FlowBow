@@ -82,8 +82,7 @@ public class Logger {
     }
 
     public boolean sendException(Exception exception) {
-        boolean success = true;
-        if(!addLog(LogType.EXCEPTION, exception.getMessage())) success = false;
+        boolean success = addLog(LogType.EXCEPTION, exception.getMessage());
         for(StackTraceElement ste : exception.getStackTrace())
             if(!addLog(LogType.EXCEPTION, ste.toString())) success = false;
         return success;

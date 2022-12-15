@@ -22,7 +22,7 @@ public class CommandAdapter extends ListenerAdapter {
 
     private final long whitelistChannel = (EnvironmentData.isLocal) ? 1038660018112839771L : 1038408973986054164L;
 
-    private HashMap<Long, Object[][]> messagePages;
+    private final HashMap<Long, Object[][]> messagePages;
 
     public CommandAdapter(JDA jda) {
         messagePages = new HashMap<>();

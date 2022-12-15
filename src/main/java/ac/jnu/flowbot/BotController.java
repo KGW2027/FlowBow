@@ -17,11 +17,11 @@ public class BotController {
         return instance;
     }
 
-    private EnvironmentData ed;
-    private JDA jda;
+    private final EnvironmentData ed;
+    private final JDA jda;
     private Guild guild;
-    private EventManager eventManager;
-    private WebHTTPRequester webHTTPRequester;
+    private final EventManager eventManager;
+    private final WebHTTPRequester webHTTPRequester;
 
     private BotController() {
         ed = EnvironmentData.getInstance();
