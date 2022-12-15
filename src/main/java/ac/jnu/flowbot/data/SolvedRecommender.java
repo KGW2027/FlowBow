@@ -136,10 +136,10 @@ public class SolvedRecommender {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(String.format("%s년 %s월 %s일의 %s 문제는 %s (문제 %d번) 입니다.", date[0], date[1], date[2], level.toUpperCase(), sp.getTitleKo(), sp.getProblemId()), String.format(SOLVED_LINK, sp.getProblemId()));
         eb.setColor(new java.awt.Color(0x5FD046));
-        eb.addField("레벨/등급", level.concat(" ").concat(parseGradeByInt(grade)), false);
+        eb.addField("레벨/등급", spoiler(level.concat(" ").concat(parseGradeByInt(grade))), false);
         eb.addField("문제를 푼 사람", String.valueOf(sp.getAcceptUserCount()), false);
         eb.addField("평균 시도 횟수", String.valueOf(sp.getAvgTries()), false);
-        eb.addField("태그", "|| " + Arrays.toString(sp.getTags().toArray(new String[0])).replace("[", "").replace("]", "") + " ||", false);
+        eb.addField("태그", spoiler(Arrays.toString(sp.getTags().toArray(new String[0])).replace("[", "").replace("]", "")), false);
         eb.setFooter("행운을 빕니다!");
 
         recent10Days.add(sp.getProblemId());
@@ -149,6 +149,10 @@ public class SolvedRecommender {
 
     public void removeOverTenDayProb() {
         if(recent10Days.size() >= 40) recent10Days.poll();
+    }
+
+    private String spoiler(String text) {
+        return "|| ".concat(text).concat(" ||");
     }
 
     private String parseGradeByInt(int i) {
