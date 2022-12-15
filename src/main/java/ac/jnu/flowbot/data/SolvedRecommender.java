@@ -44,8 +44,6 @@ public class SolvedRecommender {
         }
     }
 
-    public SolvedCache getCache() { return cache; }
-
     private void syncFile() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
