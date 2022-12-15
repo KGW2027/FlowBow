@@ -16,6 +16,7 @@ public class SolvedRecommender {
     SolvedCache cache;
 
     private static final String SOLVED_LINK = "https://www.acmicpc.net/problem/%d";
+    Queue<Integer> recent10Days;
 
     private static SolvedRecommender instance;
     public static SolvedRecommender getInstance() {
@@ -25,6 +26,7 @@ public class SolvedRecommender {
     }
 
     private SolvedRecommender() {
+        recent10Days = new LinkedList<>();
         try {
             file = new File("./datas/solvedCache.dat");
             file.getParentFile().mkdirs();
@@ -128,7 +130,7 @@ public class SolvedRecommender {
 
             List<SolvedProblem> list = cache.get(tiers[grade]);
             sp = list.get(randKey - subs);
-        } while(!sp.isKoreanTranslated() || sp.getAcceptUserCount() < 100);
+        } while(!sp.isKoreanTranslated() || sp.getAcceptUserCount() < 100 || recent10Days.contains(sp.getProblemId()));
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
@@ -141,7 +143,14 @@ public class SolvedRecommender {
         eb.addField("평균 시도 횟수", String.valueOf(sp.getAvgTries()), false);
         eb.addField("태그", "|| " + Arrays.toString(sp.getTags().toArray(new String[0])).replace("[", "").replace("]", "") + " ||", false);
         eb.setFooter("행운을 빕니다!");
+
+        recent10Days.add(sp.getProblemId());
+        removeOverTenDayProb();
         return eb.build();
+    }
+
+    public void removeOverTenDayProb() {
+        if(recent10Days.size() >= 40) recent10Days.poll();
     }
 
     private String parseGradeByInt(int i) {
