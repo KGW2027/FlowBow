@@ -111,21 +111,7 @@ public class SolvedRecommender {
      * @return 문제 Embed
      */
     public MessageEmbed getDayRandomProblem(String level) {
-        SolvedTier[] tiers = new SolvedTier[0];
-        switch(level.toLowerCase(Locale.ROOT)) {
-            case "bronze":
-                tiers = new SolvedTier[]{SolvedTier.BRONZE_V, SolvedTier.BRONZE_IV, SolvedTier.BRONZE_III, SolvedTier.BRONZE_II, SolvedTier.BRONZE_I};
-                break;
-            case "silver":
-                tiers = new SolvedTier[]{SolvedTier.SILVER_V, SolvedTier.SILVER_IV, SolvedTier.SILVER_III, SolvedTier.SILVER_II, SolvedTier.SILVER_I};
-                break;
-            case "gold":
-                tiers = new SolvedTier[]{SolvedTier.GOLD_V, SolvedTier.GOLD_IV, SolvedTier.GOLD_III, SolvedTier.GOLD_II, SolvedTier.GOLD_I};
-                break;
-            case "platinum":
-                tiers = new SolvedTier[]{SolvedTier.PLATINUM_V, SolvedTier.PLATINUM_IV, SolvedTier.PLATINUM_III, SolvedTier.PLATINUM_II, SolvedTier.PLATINUM_I};
-                break;
-        }
+        SolvedTier[] tiers = SolvedTier.getTierList(level);
 
         int bound = 0;
         for(SolvedTier tier : tiers) bound += cache.get(tier).size();

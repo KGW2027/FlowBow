@@ -45,4 +45,22 @@ public enum SolvedTier {
     public int getTier() {
         return tierNum;
     }
+
+    public static SolvedTier[] getTierList(String name) {
+        switch(name.toLowerCase()) {
+            case "bronze":
+                return new SolvedTier[]{BRONZE_I, BRONZE_II, BRONZE_III, BRONZE_IV, BRONZE_V};
+            case "silver":
+                return new SolvedTier[]{SILVER_I, SILVER_II, SILVER_III, SILVER_IV, SILVER_V};
+            case "gold":
+                return new SolvedTier[]{GOLD_I, GOLD_II, GOLD_III, GOLD_IV, GOLD_V};
+            case "platinum":
+                return new SolvedTier[]{PLATINUM_I, PLATINUM_II, PLATINUM_III, PLATINUM_IV, PLATINUM_V};
+            case "diamond":
+                return new SolvedTier[]{DIAMOND_I, DIAMOND_II, DIAMOND_III, DIAMOND_IV, DIAMOND_V};
+            case "ruby":
+                return new SolvedTier[]{RUBY_I, RUBY_II, RUBY_III, RUBY_IV, RUBY_V};
+        }
+        return new SolvedTier[0];
+    }
 }
