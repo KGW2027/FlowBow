@@ -3,9 +3,9 @@ package ac.jnu.flowbot.events;
 import ac.jnu.flowbot.data.EnvironmentData;
 import ac.jnu.flowbot.data.ProgrammersRecommender;
 import ac.jnu.flowbot.data.SolvedRecommender;
+import ac.jnu.flowbot.functions.SolvedProblemParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -27,6 +27,7 @@ public class CommandAdapter extends ListenerAdapter {
     public CommandAdapter(JDA jda) {
         messagePages = new HashMap<>();
         jda.upsertCommand("hello", "Hello").queue();
+        jda.upsertCommand("manual-day-prob", "수동으로 추천 문제 출력").queue();
 
         List<SubcommandData> pgmsSubcommands = new ArrayList<>();
 
@@ -152,6 +153,10 @@ public class CommandAdapter extends ListenerAdapter {
                 OptionMapping tags = event.getOption("tag");
                 randomSolvedProblem(level, grade, tags, event.getHook());
                 event.deferReply().queue();
+                break;
+            case "manual-day-prob":
+                if(event.getMember() != null && !event.getMember().isOwner()) break;
+                SolvedProblemParser.sendRecommendDayProblems();
                 break;
         }
     }
