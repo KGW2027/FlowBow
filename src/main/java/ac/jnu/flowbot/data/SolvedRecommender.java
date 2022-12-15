@@ -113,20 +113,22 @@ public class SolvedRecommender {
     public MessageEmbed getDayRandomProblem(String level) {
         SolvedTier[] tiers = SolvedTier.getTierList(level);
 
-        int bound = 0;
+        int bound = 0, grade = 0;
         for(SolvedTier tier : tiers) bound += cache.get(tier).size();
 
-        int randKey = (new Random()).nextInt(bound);
-        int subs = 0;
-        int grade = 0;
-        for(; grade < 4 ; grade++) {
-            int size = cache.get(tiers[grade]).size();
-            if(randKey < subs+size) break;
-            subs += size;
-        }
+        SolvedProblem sp;
+        do {
+            int randKey = (new Random()).nextInt(bound), subs = 0;
+            grade = 0;
+            for (; grade < 4; grade++) {
+                int size = cache.get(tiers[grade]).size();
+                if (randKey < subs + size) break;
+                subs += size;
+            }
 
-        List<SolvedProblem> list = cache.get(tiers[grade]);
-        SolvedProblem sp = list.get(randKey - subs);
+            List<SolvedProblem> list = cache.get(tiers[grade]);
+            sp = list.get(randKey - subs);
+        } while(!sp.isKoreanTranslated() || sp.getAcceptUserCount() < 100);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
