@@ -1,7 +1,6 @@
 package ac.jnu.flowbot.data.database;
 
 public enum SolvedTier {
-    UNRATED(0),
     BRONZE_V(1),
     BRONZE_IV(2),
     BRONZE_III(3),

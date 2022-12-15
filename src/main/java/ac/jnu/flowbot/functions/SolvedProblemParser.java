@@ -22,6 +22,8 @@ public class SolvedProblemParser {
 
     private static final String COUNT_PATTERN = "(?<=(\"count\":))(.*?)(?=,)";
     private static final String PROB_LINE_PATTERN = "(?<=(\\{\"problemId\":))(.*?)(?=]}]})";
+
+    private static final String TITLE_KO_CONTAINS_PATTERN = "(?<=(\"titles\":\\[))(.*?)(?=])";
     private static final String TITLE_KO_PATTERN = "(?<=(\"titleKo\":\"))(.*?)(?=\",)";
     private static final String ACCEPT_USER_COUNT_PATTERN = "(?<=(\"acceptedUserCount\":))(.*?)(?=,)";
     private static final String AVG_TRIES_PATTERN = "(?<=(\"averageTries\":))(.*?)(?=,)";
@@ -33,7 +35,6 @@ public class SolvedProblemParser {
     public static void parseSolvedData() {
         new Thread(() -> {
             for (SolvedTier tier : SolvedTier.values()) {
-                if(tier.getTier() < 18) continue;
                 try {
                     parseSolvedData(tier);
                     Thread.sleep(20 * 1000);
@@ -61,7 +62,7 @@ public class SolvedProblemParser {
             if(curPage == 1) {
                 matcher = countPattern.matcher(json);
                 if(!matcher.find()) {
-                    EnvironmentData.logger.failedParseSolvedProblem(SolvedTier.BRONZE_V);
+                    EnvironmentData.logger.failedParseSolvedProblem(tier);
                     return;
                 }
                 maxPage = (int) Math.ceil(Integer.parseInt(matcher.group()) / 50.0f);
@@ -72,13 +73,11 @@ public class SolvedProblemParser {
             matcher = elementPattern.matcher(json);
             while(matcher.find()) {
                 String element = matcher.group();
-                if(!element.contains("\"ko\""))
-                    System.out.println(element);
                 SolvedProblem sp = parseProblem(element);
                 problems.add(sp);
             }
 
-        }while(++curPage <= 1);
+        }while(++curPage <= maxPage);
 
         SolvedRecommender.getInstance().setCache(tier, problems);
         System.out.println("Solved Tier " + tier + " 에 대한 parse 완료, Count : " + problems.size());
@@ -92,6 +91,9 @@ public class SolvedProblemParser {
         Pattern acceptCountPattern = Pattern.compile(ACCEPT_USER_COUNT_PATTERN);
         Pattern avgTriesPattern = Pattern.compile(AVG_TRIES_PATTERN);
         Pattern tagPattern = Pattern.compile(TAG_KO_PATTERN);
+
+        Pattern titleContainsPattern = Pattern.compile(TITLE_KO_CONTAINS_PATTERN);
+        final String koCheck = "\"language\":\"ko\"";
 
         Matcher innerMatcher;
 
@@ -110,6 +112,10 @@ public class SolvedProblemParser {
         innerMatcher.find();
         sp.setAvgTries(Float.parseFloat(innerMatcher.group()));
 
+        innerMatcher = titleContainsPattern.matcher(element);
+        innerMatcher.find();
+        sp.setIsKorean(innerMatcher.group().contains(koCheck));
+
         innerMatcher = tagPattern.matcher(element);
         List<String> tags = new ArrayList<>();
         while (innerMatcher.find()) {
@@ -122,7 +128,7 @@ public class SolvedProblemParser {
 
     private static String getJSONData(SolvedTier tier, int page) throws IOException {
         String path = tier.getURL().concat(String.format("&page=%d", page));
-//        EnvironmentData.logger.sendHTTPRequest(path);
+        EnvironmentData.logger.sendHTTPRequest(path);
 
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -133,7 +139,7 @@ public class SolvedProblemParser {
             System.out.println(path +" 와의 연결에 실패했습니다. ResponseCode : " + conn.getResponseCode());
             return null;
         }
-//        EnvironmentData.logger.responseHTTPRequest(path, conn.getResponseCode());
+        EnvironmentData.logger.responseHTTPRequest(path, conn.getResponseCode());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         StringBuilder builder = new StringBuilder();

@@ -7,13 +7,14 @@ import java.util.List;
 
 public class SolvedProblem implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1000L;
+    private static final long serialVersionUID = 1001L;
 
     int problemId;
     String titleKo;
     long acceptUserCount;
     float avgTries;
     List<String> tags;
+    boolean isKorean;
 
     public void setAcceptUserCount(long acceptUserCount) {
         this.acceptUserCount = acceptUserCount;
@@ -35,6 +36,8 @@ public class SolvedProblem implements Serializable {
         this.titleKo = titleKo;
     }
 
+    public void setIsKorean(boolean isKorean) { this.isKorean = isKorean; }
+
     public List<String> getTags() {
         return tags;
     }
@@ -55,9 +58,11 @@ public class SolvedProblem implements Serializable {
         return avgTries;
     }
 
+    public boolean isKoreanTranslated() { return isKorean; }
+
     @Override
     public String toString() {
-        return String.format("[문제 %d] %s \t 푼 사람 : %d명\t평균 시도 횟수 : %.3f회\t태그 : %s", problemId, titleKo, acceptUserCount, avgTries, Arrays.toString(tags.toArray()));
+        return String.format("[문제 %d] %s \t 푼 사람 : %d명\t평균 시도 횟수 : %.3f회\t태그 : %s\t한글 번역 여부 : %s", problemId, titleKo, acceptUserCount, avgTries, Arrays.toString(tags.toArray()), isKoreanTranslated());
     }
 
 }
