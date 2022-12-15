@@ -35,10 +35,10 @@ public class BotController {
         jda.awaitReady();
         guild = ed.getMainGuild();
         validUtilities();
-        new Thread(webHTTPRequester).start();
     }
 
     private void validUtilities() {
+        new Thread(webHTTPRequester).start();
         FunctionManager.checkAuthorizationInfoMessage(Objects.requireNonNull(guild.getTextChannelById(Authorization.channel)));
         FunctionManager.checkFavoriteLanguages(guild, Objects.requireNonNull(guild.getTextChannelById(FavoriteLanguages.channel)));
         FunctionManager.checkPrivacySettings(Objects.requireNonNull(guild.getTextChannelById(PrivacySettings.channel)));
