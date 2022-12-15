@@ -1,5 +1,7 @@
 package ac.jnu.flowbot.data.database;
 
+import java.io.Serial;
+
 public enum SolvedTier {
     BRONZE_V(1),
     BRONZE_IV(2),
@@ -33,6 +35,7 @@ public enum SolvedTier {
     RUBY_I(30),
     ;
 
+    @Serial private static final long serialVersionUID = 2000L;
 
     int tierNum;
 

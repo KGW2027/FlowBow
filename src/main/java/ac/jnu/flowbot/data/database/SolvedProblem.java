@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SolvedProblem implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1001L;
+    private static final long serialVersionUID = 2000L;
 
     int problemId;
     String titleKo;

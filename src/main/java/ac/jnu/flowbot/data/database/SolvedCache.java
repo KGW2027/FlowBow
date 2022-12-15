@@ -13,7 +13,7 @@ import java.util.List;
 public class SolvedCache implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1000L;
+    private static final long serialVersionUID = 2000L;
 
     HashMap<SolvedTier, List<SolvedProblem>> problems;
 
