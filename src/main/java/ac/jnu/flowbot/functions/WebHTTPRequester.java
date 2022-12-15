@@ -50,17 +50,20 @@ public class WebHTTPRequester implements Runnable{
 
     @Override
     public void run() {
-        try {
             while(true) {
-                connectSoftware();
-                connectSojung();
-                connectEngineering();
-                Thread.sleep(6 * HOURS);
+                try {
+                    connectSoftware();
+                    connectSojung();
+                    connectEngineering();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(6 * HOURS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /*
