@@ -139,7 +139,7 @@ public class SolvedRecommender {
         eb.addField("레벨/등급", level.concat(" ").concat(parseGradeByInt(grade)), false);
         eb.addField("문제를 푼 사람", String.valueOf(sp.getAcceptUserCount()), false);
         eb.addField("평균 시도 횟수", String.valueOf(sp.getAvgTries()), false);
-        eb.addField("태그", Arrays.toString(sp.getTags().toArray(new String[0])).replace("[", "").replace("]", ""), false);
+        eb.addField("태그", "|| " + Arrays.toString(sp.getTags().toArray(new String[0])).replace("[", "").replace("]", "") + " ||", false);
         eb.setFooter("행운을 빕니다!");
         return eb.build();
     }
