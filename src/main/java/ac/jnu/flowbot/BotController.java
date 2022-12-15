@@ -43,7 +43,5 @@ public class BotController {
         FunctionManager.checkFavoriteLanguages(guild, Objects.requireNonNull(guild.getTextChannelById(FavoriteLanguages.channel)));
         FunctionManager.checkPrivacySettings(Objects.requireNonNull(guild.getTextChannelById(PrivacySettings.channel)));
         DayUpdater.initInstance();
-        // Solved.ac에 많은 Request를 보내게 되므로 평상시에는 비활성화 해야한다.
-        // SolvedProblemParser.parseSolvedData();
     }
 }
