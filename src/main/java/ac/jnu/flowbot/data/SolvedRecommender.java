@@ -113,7 +113,9 @@ public class SolvedRecommender {
         SolvedTier[] tiers = SolvedTier.getTierList(level);
 
         int bound = 0, grade = 0;
-        for(SolvedTier tier : tiers) bound += cache.get(tier).size();
+        for(SolvedTier tier : tiers){
+            bound += cache.get(tier).size();
+        }
 
         SolvedProblem sp;
         do {
@@ -155,14 +157,14 @@ public class SolvedRecommender {
     }
 
     private String parseGradeByInt(int i) {
-        switch(i) {
-            case 0 : return "V";
-            case 1 : return "IV";
-            case 2 : return "III";
-            case 3 : return "II";
-            case 4 : return "I";
-        }
-        return "";
+        return switch (i) {
+            case 0 -> "I";
+            case 1 -> "II";
+            case 2 -> "III";
+            case 3 -> "IV";
+            case 4 -> "V";
+            default -> "";
+        };
     }
 
     private boolean validTags(List<String> tags, String[] conds) {
