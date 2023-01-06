@@ -81,18 +81,17 @@ public class SolvedRecommender {
             return getErrorEmbed();
         }
 
-        int randomKey;
-        SolvedProblem sp;
-        int tries = 0;
-        do {
-            randomKey = (new Random()).nextInt(probs.size());
-            sp = probs.get(randomKey);
-        }while(tries++ < 25 && !validTags(sp.getTags(), tags));
-
-        if(tries >= 25) {
-            return getMaxTries();
+        List<SolvedProblem> tagChecks = new ArrayList<>();
+        for(SolvedProblem sp : probs) {
+            if(!validTags(sp.getTags(), tags)) continue;
+            tagChecks.add(sp);
         }
 
+        if(tagChecks.size() == 0) {
+            return getNoProbs();
+        }
+
+        SolvedProblem sp = probs.get((new Random()).nextInt(tagChecks.size()));
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(String.format("%s (문제 %d번) 입니다.", sp.getTitleKo(), sp.getProblemId()), String.format(SOLVED_LINK, sp.getProblemId()));
         eb.setColor(new java.awt.Color(0x5FD046));
@@ -192,6 +191,15 @@ public class SolvedRecommender {
         return eb.build();
     }
 
+    private MessageEmbed getNoProbs() {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("일치하는 문제가 없습니다.");
+        eb.setDescription("해당 태그를 가진 문제가 이 티어에는 없습니다... ;(");
+        eb.setColor(new java.awt.Color(0xB72A2A));
+        return eb.build();
+    }
+
+    @Deprecated
     private MessageEmbed getMaxTries() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("문제를 찾을 수 없습니다.");
