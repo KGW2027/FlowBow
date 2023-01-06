@@ -91,7 +91,7 @@ public class SolvedRecommender {
             return getNoProbs();
         }
 
-        SolvedProblem sp = probs.get((new Random()).nextInt(tagChecks.size()));
+        SolvedProblem sp = tagChecks.get((new Random()).nextInt(tagChecks.size()));
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(String.format("%s (문제 %d번) 입니다.", sp.getTitleKo(), sp.getProblemId()), String.format(SOLVED_LINK, sp.getProblemId()));
         eb.setColor(new java.awt.Color(0x5FD046));
@@ -166,20 +166,13 @@ public class SolvedRecommender {
     }
 
     private boolean validTags(List<String> tags, String[] conds) {
-        boolean[] valid = new boolean[conds.length];
+        StringBuilder tagsConcat = new StringBuilder();
+        for(String probTag : tags) tagsConcat.append(probTag).append(' ');
 
-        String[] condsSpaceConverted = new String[conds.length];
-        for(int key = 0 ; key < conds.length ; key++) {
-            condsSpaceConverted[key] = conds[key].replace("_", " ");
+        String test = tagsConcat.toString();
+        for(String condTag : conds) {
+            if(!test.contains(condTag)) return false;
         }
-
-        for(String t : tags) {
-            for(int i = 0 ; i < conds.length ; i++) {
-                if(!valid[i] && t.contains(condsSpaceConverted[i])) valid[i] = true;
-            }
-        }
-
-        for(boolean v : valid) if(!v) return false;
         return true;
     }
 
