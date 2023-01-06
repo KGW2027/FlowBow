@@ -2,7 +2,6 @@ package ac.jnu.flowbot.functions;
 
 import ac.jnu.flowbot.data.EnvironmentData;
 import ac.jnu.flowbot.data.SolvedRecommender;
-import ac.jnu.flowbot.data.database.SolvedCache;
 import ac.jnu.flowbot.data.database.SolvedProblem;
 import ac.jnu.flowbot.data.database.SolvedTier;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -21,7 +20,7 @@ import java.util.regex.Pattern;
 public class SolvedProblemParser {
 
     private static final String COUNT_PATTERN = "(?<=(\"count\":))(.*?)(?=,)";
-    private static final String PROB_LINE_PATTERN = "(?<=(\\{\"problemId\":))(.*?)(?=]}]})";
+    private static final String PROB_LINE_PATTERN = "(?<=(\\{\"problemId\":))(.*?)(?=}]}])";
 
     private static final String TITLE_KO_CONTAINS_PATTERN = "(?<=(\"titles\":\\[))(.*?)(?=])";
     private static final String TITLE_KO_PATTERN = "(?<=(\"titleKo\":\"))(.*?)(?=\",)";
@@ -36,8 +35,8 @@ public class SolvedProblemParser {
         new Thread(() -> {
             for (SolvedTier tier : SolvedTier.values()) {
                 try {
+//                    System.out.printf("%s 티어를 검색 하는 중\n", tier);
                     parseSolvedData(tier);
-                    Thread.sleep(20 * 1000);
                 } catch (InterruptedException | IOException e) {
                     e.printStackTrace();
                 }
@@ -45,7 +44,7 @@ public class SolvedProblemParser {
         }).start();
     }
 
-    public static void parseSolvedData(SolvedTier tier) throws IOException {
+    public static void parseSolvedData(SolvedTier tier) throws IOException, InterruptedException {
 
         String json = getJSONData(tier, 1);
 
@@ -55,20 +54,33 @@ public class SolvedProblemParser {
         Matcher matcher;
         int maxPage = 1;
         int curPage = 1;
+        int errorCount = 0;
 
         List<SolvedProblem> problems = new ArrayList<>();
         do{
-
             if(curPage == 1) {
                 matcher = countPattern.matcher(json);
                 if(!matcher.find()) {
-                    EnvironmentData.logger.failedParseSolvedProblem(tier);
+//                    EnvironmentData.logger.failedParseSolvedProblem(tier);
                     return;
                 }
                 maxPage = (int) Math.ceil(Integer.parseInt(matcher.group()) / 50.0f);
             } else {
+                Thread.sleep(6 * 1000);
                 json = getJSONData(tier, curPage);
+                if(isNum(json)) {
+                    int code = Integer.parseInt(json);
+                    if(errorCount++ >= 3) {
+//                        System.out.println("3번 에러가 반복되어 검색이 종료됩니다.");
+                        return;
+                    }
+
+//                    System.out.printf("HTTP RESPONSE CODE : %d, 10분 대기\n", code);
+                    Thread.sleep(10 * 60 * 1000);
+                    continue;
+                }
             }
+//            System.out.printf("페이지 %d / %d\n", curPage, maxPage);
 
             matcher = elementPattern.matcher(json);
             while(matcher.find()) {
@@ -76,11 +88,12 @@ public class SolvedProblemParser {
                 SolvedProblem sp = parseProblem(element);
                 problems.add(sp);
             }
+            errorCount = 0;
 
         }while(++curPage <= maxPage);
 
         SolvedRecommender.getInstance().setCache(tier, problems);
-        System.out.println("Solved Tier " + tier + " 에 대한 parse 완료, Count : " + problems.size());
+//        System.out.println("Solved Tier " + tier + " 에 대한 parse 완료, Count : " + problems.size());
     }
 
     private static SolvedProblem parseProblem(String element) {
@@ -128,7 +141,7 @@ public class SolvedProblemParser {
 
     private static String getJSONData(SolvedTier tier, int page) throws IOException {
         String path = tier.getURL().concat(String.format("&page=%d", page));
-        EnvironmentData.logger.sendHTTPRequest(path);
+//        EnvironmentData.logger.sendHTTPRequest(path);
 
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -137,9 +150,9 @@ public class SolvedProblemParser {
         if(conn.getResponseCode() != 200) {
             EnvironmentData.logger.responseHTTPRequest(path, conn.getResponseCode());
             System.out.println(path +" 와의 연결에 실패했습니다. ResponseCode : " + conn.getResponseCode());
-            return null;
+            return String.valueOf(conn.getResponseCode());
         }
-        EnvironmentData.logger.responseHTTPRequest(path, conn.getResponseCode());
+//        EnvironmentData.logger.responseHTTPRequest(path, conn.getResponseCode());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         StringBuilder builder = new StringBuilder();
@@ -161,5 +174,12 @@ public class SolvedProblemParser {
         recommends.add(SolvedRecommender.getInstance().getDayRandomProblem("platinum"));
 
         tc.sendMessageEmbeds(recommends).complete();
+    }
+
+    private static boolean isNum(String num) {
+        try{
+            int i = Integer.parseInt(num);
+            return true;
+        } catch (Exception failed) { return false; }
     }
 }

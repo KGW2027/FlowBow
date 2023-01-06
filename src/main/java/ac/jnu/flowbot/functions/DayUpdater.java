@@ -3,6 +3,7 @@ package ac.jnu.flowbot.functions;
 import ac.jnu.flowbot.data.EnvironmentData;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
@@ -41,5 +42,7 @@ public class DayUpdater {
     private void runDayFunctions() {
          EnvironmentData.logger.runDayUpdater();
          SolvedProblemParser.sendRecommendDayProblems();
+         if(Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul")).get(Calendar.DAY_OF_WEEK) == 1)
+             SolvedProblemParser.parseSolvedData();
     }
 }

@@ -16,7 +16,7 @@ public class EnvironmentData {
     private static EnvironmentData instance;
     public static Logger logger;
 
-    public static final boolean isLocal = true;
+    public static final boolean isLocal = false;
 
     public static EnvironmentData getInstance() {
         if(instance == null) {
